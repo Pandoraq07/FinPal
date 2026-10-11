@@ -4,47 +4,146 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FinPal — Create Account</title>
-  <link rel="stylesheet" href="auth-style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --indigo: #4F46E5;
+      --violet: #7C3AED;
+      --text: #0F0F1A;
+      --muted: #6B7280;
+      --border: #E5E7EB;
+      --input-bg: #F9FAFB;
+      --error: #EF4444;
+    }
+    html, body { height: 100%; font-family: 'Inter', sans-serif; background: #fff; }
+    .page { display: grid; grid-template-columns: 1fr 1fr; min-height: 100vh; }
+    .panel-image { position: relative; overflow: hidden; }
+    .panel-image img { width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; }
+    .panel-image-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(79,70,229,0.15) 0%, rgba(124,58,237,0.08) 100%);
+      pointer-events: none;
+    }
+    .panel-brand { position: absolute; top: 36px; left: 36px; display: flex; align-items: center; gap: 10px; z-index: 2; }
+    .logo-mark {
+      width: 40px; height: 40px;
+      background: linear-gradient(135deg, var(--indigo), var(--violet));
+      border-radius: 10px; display: flex; align-items: center; justify-content: center;
+      color: #fff; font-weight: 800; font-size: 18px;
+      box-shadow: 0 4px 16px rgba(79,70,229,0.4);
+    }
+    .logo-name { color: #fff; font-weight: 700; font-size: 20px; text-shadow: 0 1px 8px rgba(0,0,0,0.3); }
+    .panel-tagline { position: absolute; bottom: 40px; left: 36px; right: 36px; z-index: 2; }
+    .panel-tagline h2 { color: #fff; font-size: 26px; font-weight: 800; line-height: 1.25; text-shadow: 0 2px 16px rgba(0,0,0,0.4); margin-bottom: 8px; }
+    .panel-tagline p { color: rgba(255,255,255,0.85); font-size: 14px; font-weight: 500; text-shadow: 0 1px 8px rgba(0,0,0,0.3); }
+    .panel-form { display: flex; align-items: center; justify-content: center; padding: 48px; background: #fff; overflow-y: auto; }
+    .form-inner { width: 100%; max-width: 400px; }
+    .slide-in { opacity: 0; transform: translateX(32px); animation: slideIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+    @keyframes slideIn { to { opacity: 1; transform: translateX(0); } }
+    .slide-in:nth-child(1) { animation-delay: 0.05s; }
+    .slide-in:nth-child(2) { animation-delay: 0.11s; }
+    .slide-in:nth-child(3) { animation-delay: 0.17s; }
+    .slide-in:nth-child(4) { animation-delay: 0.23s; }
+    .slide-in:nth-child(5) { animation-delay: 0.29s; }
+    .slide-in:nth-child(6) { animation-delay: 0.35s; }
+    .slide-in:nth-child(7) { animation-delay: 0.41s; }
+    .slide-in:nth-child(8) { animation-delay: 0.47s; }
+    .form-eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; color: var(--indigo); text-transform: uppercase; margin-bottom: 12px; }
+    .form-title { font-size: 30px; font-weight: 800; color: var(--text); line-height: 1.2; margin-bottom: 6px; }
+    .form-sub { font-size: 14px; color: var(--muted); margin-bottom: 28px; }
+    .input-group { margin-bottom: 18px; }
+    .input-label { display: block; font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 7px; }
+    .auth-input {
+      width: 100%; padding: 13px 16px;
+      background: var(--input-bg); border: 1.5px solid var(--border);
+      border-radius: 10px; font-size: 14px; font-family: 'Inter', sans-serif;
+      color: var(--text); transition: border-color 0.2s, box-shadow 0.2s; outline: none;
+    }
+    .auth-input:focus { border-color: var(--indigo); background: #fff; box-shadow: 0 0 0 3px rgba(79,70,229,0.12); }
+    .auth-input::placeholder { color: #B0B7C3; }
+    .strength-bar { display: flex; gap: 4px; margin-top: 8px; }
+    .strength-segment { flex: 1; height: 3px; border-radius: 2px; background: var(--border); transition: background 0.3s; }
+    .strength-segment.weak { background: #EF4444; }
+    .strength-segment.fair { background: #F59E0B; }
+    .strength-segment.strong { background: #10B981; }
+    .strength-label { font-size: 11px; color: var(--muted); margin-top: 4px; }
+    .error-msg { font-size: 13px; color: var(--error); min-height: 18px; margin-bottom: 4px; }
+    .auth-btn {
+      width: 100%; padding: 14px;
+      background: linear-gradient(135deg, var(--indigo), var(--violet));
+      color: #fff; border: none; border-radius: 10px;
+      font-size: 15px; font-weight: 700; font-family: 'Inter', sans-serif;
+      cursor: pointer; margin-top: 6px;
+      transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 4px 20px rgba(79,70,229,0.35);
+    }
+    .auth-btn:hover { opacity: 0.93; transform: translateY(-1px); box-shadow: 0 8px 28px rgba(79,70,229,0.4); }
+    .auth-btn:active { transform: translateY(0); }
+    .auth-btn.loading { opacity: 0.7; pointer-events: none; }
+    .auth-switch { text-align: center; font-size: 13px; color: var(--muted); margin-top: 20px; }
+    .auth-switch a { color: var(--indigo); font-weight: 600; text-decoration: none; }
+    .auth-switch a:hover { text-decoration: underline; }
+    .terms { font-size: 11px; color: var(--muted); text-align: center; margin-top: 16px; line-height: 1.5; }
+    @media (max-width: 768px) {
+      .page { grid-template-columns: 1fr; }
+      .panel-image { display: none; }
+      .panel-form { padding: 40px 24px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .slide-in { animation: none; opacity: 1; transform: none; }
+    }
+  </style>
 </head>
 <body>
-  <div class="auth-grid"></div>
-
-  <div class="auth-wrapper">
-    <div class="auth-card">
-      <div class="auth-logo">
+  <div class="page">
+    <div class="panel-image">
+      <img src="../images/register.jpg" alt="Finance background">
+      <div class="panel-image-overlay"></div>
+      <div class="panel-brand">
         <div class="logo-mark">F</div>
         <span class="logo-name">FinPal</span>
       </div>
-
-      <h1 class="auth-title">Create account</h1>
-      <p class="auth-sub">Start tracking your finances today</p>
-
-      <form class="auth-form" id="registerForm">
-        <div class="input-group">
-          <label class="input-label" for="regEmail">Email</label>
-          <input class="auth-input" type="email" id="regEmail" placeholder="you@example.com" required autocomplete="email">
-        </div>
-        <div class="input-group">
-          <label class="input-label" for="regPassword">Password</label>
-          <input class="auth-input" type="password" id="regPassword" placeholder="Aa, 1 number & symbol" required autocomplete="new-password" minlength="6">
-        </div>
-        <p class="password-requirements">Password must contain the following:</p>
-        <ul class="password-rules">
-          <li>At least 6 characters</li>
-          <li>One uppercase letter</li>
-          <li>One lowercase letter</li>
-          <li>One number</li>
-          <li>One special character</li>
-        </ul>
-        <p class="error-msg" id="regError"></p>
-      
-        <button class="auth-btn" type="submit">Create account</button>
-      </form>
-
-      <div class="auth-switch">
-        Already have an account? <a href="login.html">Sign in</a>
+      <div class="panel-tagline">
+        <h2>Your money,<br>finally under control.</h2>
+        <p>Join thousands tracking smarter with FinPal.</p>
       </div>
-      <p class="auth-tagline">Your data stays on your device. Always.</p>
+    </div>
+
+    <div class="panel-form">
+      <div class="form-inner">
+        <p class="form-eyebrow slide-in">Get started</p>
+        <h1 class="form-title slide-in">Create your<br>free account</h1>
+        <p class="form-sub slide-in">Takes less than a minute</p>
+
+        <form id="registerForm">
+          <div class="input-group slide-in">
+            <label class="input-label" for="regName">Full Name</label>
+            <input class="auth-input" type="text" id="regName" placeholder="John Doe" required autocomplete="name">
+          </div>
+          <div class="input-group slide-in">
+            <label class="input-label" for="regEmail">Email</label>
+            <input class="auth-input" type="email" id="regEmail" placeholder="you@example.com" required autocomplete="email">
+          </div>
+          <div class="input-group slide-in">
+            <label class="input-label" for="regPassword">Password</label>
+            <input class="auth-input" type="password" id="regPassword" placeholder="Min. 8 characters" required autocomplete="new-password" minlength="8">
+            <div class="strength-bar">
+              <div class="strength-segment" id="s1"></div>
+              <div class="strength-segment" id="s2"></div>
+              <div class="strength-segment" id="s3"></div>
+              <div class="strength-segment" id="s4"></div>
+            </div>
+            <p class="strength-label" id="strengthLabel"></p>
+          </div>
+          <p class="error-msg slide-in" id="regError"></p>
+          <button class="auth-btn slide-in" type="submit">Create account</button>
+        </form>
+
+        <p class="auth-switch slide-in">Already have an account? <a href="login.html">Sign in</a></p>
+        <p class="terms slide-in">By creating an account you agree to our Terms of Service and Privacy Policy.</p>
+      </div>
     </div>
   </div>
 
@@ -52,49 +151,68 @@
   <script>
     const form = document.getElementById('registerForm');
     const regError = document.getElementById('regError');
+    const passwordInput = document.getElementById('regPassword');
+    const segments = [document.getElementById('s1'), document.getElementById('s2'), document.getElementById('s3'), document.getElementById('s4')];
+    const strengthLabel = document.getElementById('strengthLabel');
+
+    function checkStrength(pw) {
+      let score = 0;
+      if (pw.length >= 8) score++;
+      if (/[A-Z]/.test(pw) && /[a-z]/.test(pw)) score++;
+      if (/[0-9]/.test(pw)) score++;
+      if (/[^A-Za-z0-9]/.test(pw)) score++;
+      return score;
+    }
+
+    passwordInput.addEventListener('input', function() {
+      const pw = this.value;
+      if (!pw) {
+        segments.forEach(s => s.className = 'strength-segment');
+        strengthLabel.textContent = '';
+        return;
+      }
+      const score = checkStrength(pw);
+      const levels = ['', 'weak', 'fair', 'fair', 'strong'];
+      const labels = ['', 'Weak', 'Fair', 'Good', 'Strong'];
+      segments.forEach((s, i) => {
+        s.className = 'strength-segment' + (i < score ? ' ' + levels[score] : '');
+      });
+      strengthLabel.textContent = labels[score];
+      strengthLabel.style.color = score <= 1 ? '#EF4444' : score <= 2 ? '#F59E0B' : '#10B981';
+    });
 
     form.addEventListener('submit', async function(e) {
       e.preventDefault();
       regError.textContent = '';
 
+      const name = document.getElementById('regName').value.trim();
       const email = document.getElementById('regEmail').value.trim();
-      const password = document.getElementById('regPassword').value.trim();
+      const password = document.getElementById('regPassword').value;
+      const btn = form.querySelector('.auth-btn');
 
-      const passwordRules = [
-        {
-          valid: password.length >= 6,
-          message: 'Password must be at least 6 characters',
-        },
-        {
-          valid: /[A-Z]/.test(password),
-          message: 'Password must contain at least one uppercase letter',
-        },
-        {
-          valid: /[a-z]/.test(password),
-          message: 'Password must contain at least one lowercase letter',
-        },
-        {
-          valid: /[0-9]/.test(password),
-          message: 'Password must contain at least one number',
-        },
-        {
-          valid: /[^A-Za-z0-9]/.test(password),
-          message: 'Password must contain at least one special character',
-        },
+      const rules = [
+        { valid: password.length >= 8, message: 'Password must be at least 8 characters' },
+        { valid: /[A-Z]/.test(password), message: 'Password needs an uppercase letter' },
+        { valid: /[a-z]/.test(password), message: 'Password needs a lowercase letter' },
+        { valid: /[0-9]/.test(password), message: 'Password needs a number' },
+        { valid: /[^A-Za-z0-9]/.test(password), message: 'Password needs a special character' },
       ];
 
-      const failedRule = passwordRules.find(rule => !rule.valid);
+      const failed = rules.find(r => !r.valid);
+      if (failed) { regError.textContent = failed.message; return; }
 
-      if (failedRule) {
-        regError.textContent = failedRule.message;
-        return;
-      }
-      const result = await registerUser(email, password);
+      btn.classList.add('loading');
+      btn.textContent = 'Creating account…';
+
+      const result = await registerUser(name, email, password);
 
       if (!result.success) {
         regError.textContent = result.message;
+        btn.classList.remove('loading');
+        btn.textContent = 'Create account';
         return;
       }
+
       window.location.href = 'login.html';
     });
   </script>

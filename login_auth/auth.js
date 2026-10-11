@@ -60,11 +60,11 @@ async function apiRequest(path, options = {}) {
   return data;
 }
 
-async function registerUser(email, password) {
+async function registerUser(name, email, password) {
   try {
     await apiRequest('/register', {
       method: 'POST',
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ name, email, password, password_confirmation: password }),
     });
 
     clearSession();

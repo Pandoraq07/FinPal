@@ -74,7 +74,7 @@ body {
   background-color: var(--bg);
   background-image:
     linear-gradient(rgba(244, 245, 247, 0.70), rgba(244, 245, 247, 0.70)),
-    url("../images/finance-bg.png");
+    url("../images/finance-bg-2.jpg");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -87,7 +87,7 @@ body {
 [data-theme="dark"] body {
   background-image:
     linear-gradient(rgba(13, 15, 20, 0.82), rgba(13, 15, 20, 0.82)),
-    url("../images/finance-bg.png");
+    url("../images/finance-bg-2.jpg");
 }
 
 /* ── LAYOUT ── */
